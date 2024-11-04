@@ -1,11 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TodoInput from "./components/TodoInput";
 import TodoList from "./components/TodoList";
 export default function App() {
   const [todos, setTodos] = useState([]);
   const [todoValue, setTodoValue] = useState("");
+
+  function prersistData(newList) {
+    localStorage.setItem("todos", JSON.stringify({ todos: newList }));
+  }
+
   function handleAddTodos(newTodo) {
     const newTodoList = [...todos, newTodo];
+    prersistData(newTodoList);
     setTodos(newTodoList);
   }
 
@@ -13,6 +19,7 @@ export default function App() {
     const newTodoList = todos.filter((todo, todoIndex) => {
       return todoIndex !== index;
     });
+    prersistData(newTodoList);
     setTodos(newTodoList);
   }
   function handleEditTodo(index) {
@@ -20,6 +27,17 @@ export default function App() {
     setTodoValue(valueToBeEdited);
     handleDeleteTodo(index);
   }
+
+  useEffect(() => {
+    if (!localStorage) return;
+
+    let localTodos = localStorage.getItem("todos");
+    if (!localTodos) {
+      return;
+    }
+    localTodos = JSON.parse(localTodos).todos;
+    setTodos(localTodos);
+  }, []);
   return (
     <>
       <TodoInput
