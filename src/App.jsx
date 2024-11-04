@@ -3,6 +3,7 @@ import TodoInput from "./components/TodoInput";
 import TodoList from "./components/TodoList";
 export default function App() {
   const [todos, setTodos] = useState([]);
+  const [todoValue, setTodoValue] = useState("");
   function handleAddTodos(newTodo) {
     const newTodoList = [...todos, newTodo];
     setTodos(newTodoList);
@@ -14,11 +15,23 @@ export default function App() {
     });
     setTodos(newTodoList);
   }
-  function handleEditTodo(index) {}
+  function handleEditTodo(index) {
+    const valueToBeEdited = todos[index];
+    setTodoValue(valueToBeEdited);
+    handleDeleteTodo(index);
+  }
   return (
     <>
-      <TodoInput handleAddTodos={handleAddTodos} />
-      <TodoList handleDeleteTodo={handleDeleteTodo} todos={todos} />
+      <TodoInput
+        todoValue={todoValue}
+        setTodoValue={setTodoValue}
+        handleAddTodos={handleAddTodos}
+      />
+      <TodoList
+        handleEditTodo={handleEditTodo}
+        handleDeleteTodo={handleDeleteTodo}
+        todos={todos}
+      />
     </>
   );
 }
